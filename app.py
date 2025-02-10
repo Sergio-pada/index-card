@@ -28,3 +28,4 @@ elif command_type == "study":
         input("")
         print(value)
         input("")
+print("test")
