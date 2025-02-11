@@ -1,1 +1,1 @@
-{"Whats the capital of California?": "Sacramento", "What is the capital of New York?": "Albany"}
+{"What is your\nage?": "29", "What is your favorite\ncolor?": "Blue", "Given the Following Code:\nprint(\"Hello World\")\nInterpolate a variable name": "print(f\"Hello {name}\")"}
