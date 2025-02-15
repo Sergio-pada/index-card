@@ -1,10 +1,11 @@
 import json
 import os
 import random
+import tkinter as tk  
+from tkinter import simpledialog, messagebox
 
 def load_data(file_path):
     """Load data from a JSON file or create a new one if it doesn't exist."""
-    # Check if the file exists
     if not os.path.exists(file_path):
         with open(file_path, 'w') as file:
             json.dump({}, file)  # Create an empty JSON file
@@ -30,38 +31,45 @@ def save_data(file_path, data):
 
 def create_entry(result_dict):
     """Create a new entry in the result dictionary."""
-    key = multi_line_input("Enter Prompt (type 'END' when done):")  # Get prompt
-    value = multi_line_input("Enter Answer (type 'END' when done):")  # Get answer
-    result_dict[key] = value  # Add entry to dictionary
+    key = simpledialog.askstring("Input", "Enter Prompt:")
+    if key is None: return
+    value = simpledialog.askstring("Input", "Enter Answer:")
+    if value is None: return
+    result_dict[key] = value
 
 def edit_entry(result_dict):
     """Edit an existing entry in the result dictionary."""
-    print("Type 'edit' if needed")
     for key, value in result_dict.items():
-        print("----------------------------------- \n")
-        print(key)  # Display the key
-        input("")  # Wait for user input
-        print(value)  # Display the value
-        if input("") == "edit":  # Check if user wants to edit
-            new_key = multi_line_input(f"Current Prompt: {key}\n")  # Get new prompt
-            new_val = multi_line_input(f"Current Value: {value}\n")  # Get new answer
-            del result_dict[key]  # Remove old entry
-            result_dict[new_key] = new_val  # Add updated entry
+        if messagebox.askyesno("Edit Entry", f"Edit this entry?\n\nPrompt: {key}\nAnswer: {value}"):
+            new_key = simpledialog.askstring("Input", f"Current Prompt: {key}")
+            if new_key is None: return
+            new_val = simpledialog.askstring("Input", f"Current Value: {value}")
+            if new_val is None: return
+            del result_dict[key]
+            result_dict[new_key] = new_val
 
 def main():
     file_path = "index_card.json"
-    result_dict = load_data(file_path)  # Load existing data
+    result_dict = load_data(file_path)
 
-    command_type = input("What would you like to do (create or study): ").strip().lower()
+    root = tk.Tk()
+    root.title("Entry Manager")
 
-    if command_type == 'create':
-        create_entry(result_dict)  # Create a new entry
-        save_data(file_path, result_dict)  # Save updated data
-    elif command_type == "study":
-        edit_entry(result_dict)  # Edit an existing entry
-        save_data(file_path, result_dict)  # Save updated data
+    def on_create():
+        create_entry(result_dict)
+        save_data(file_path, result_dict)
 
-    print("-----------------------------------")
+    def on_study():
+        edit_entry(result_dict)
+        save_data(file_path, result_dict)
+
+    create_button = tk.Button(root, text="Create Entry", command=on_create)
+    create_button.pack(pady=10)
+
+    study_button = tk.Button(root, text="Study Entries", command=on_study)
+    study_button.pack(pady=10)
+
+    root.mainloop()
 
 if __name__ == "__main__":
-    main()  # Run the main function
+    main()
