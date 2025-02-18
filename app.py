@@ -1,8 +1,6 @@
 import json
 import os
-import random
-import tkinter as tk  
-from tkinter import simpledialog, messagebox
+from PyQt5 import QtWidgets, QtGui
 
 def load_data(file_path):
     """Load data from a JSON file or create a new one if it doesn't exist."""
@@ -31,20 +29,22 @@ def save_data(file_path, data):
 
 def create_entry(result_dict):
     """Create a new entry in the result dictionary."""
-    key = simpledialog.askstring("Input", "Enter Prompt:")
-    if key is None: return
-    value = simpledialog.askstring("Input", "Enter Answer:")
-    if value is None: return
+    key, ok1 = QtWidgets.QInputDialog.getText(None, "Input", "Enter Prompt:")
+    if not ok1: return
+    value, ok2 = QtWidgets.QInputDialog.getText(None, "Input", "Enter Answer:")
+    if not ok2: return
     result_dict[key] = value
 
 def edit_entry(result_dict):
     """Edit an existing entry in the result dictionary."""
     for key, value in result_dict.items():
-        if messagebox.askyesno("Edit Entry", f"Edit this entry?\n\nPrompt: {key}\nAnswer: {value}"):
-            new_key = simpledialog.askstring("Input", f"Current Prompt: {key}")
-            if new_key is None: return
-            new_val = simpledialog.askstring("Input", f"Current Value: {value}")
-            if new_val is None: return
+        reply = QtWidgets.QMessageBox.question(None, "Edit Entry", f"Edit this entry?\n\nPrompt: {key}\nAnswer: {value}",
+                                               QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if reply == QtWidgets.QMessageBox.Yes:
+            new_key, ok1 = QtWidgets.QInputDialog.getText(None, "Input", f"Current Prompt: {key}")
+            if not ok1: return
+            new_val, ok2 = QtWidgets.QInputDialog.getText(None, "Input", f"Current Value: {value}")
+            if not ok2: return
             del result_dict[key]
             result_dict[new_key] = new_val
 
@@ -52,24 +52,23 @@ def main():
     file_path = "index_card.json"
     result_dict = load_data(file_path)
 
-    root = tk.Tk()
-    root.title("Entry Manager")
+    app = QtWidgets.QApplication([])  # Create the application
+    window = QtWidgets.QWidget()  # Create the main window
+    window.setWindowTitle("Entry Manager")
 
-    def on_create():
-        create_entry(result_dict)
-        save_data(file_path, result_dict)
+    layout = QtWidgets.QVBoxLayout()  # Set layout for the window
 
-    def on_study():
-        edit_entry(result_dict)
-        save_data(file_path, result_dict)
+    create_button = QtWidgets.QPushButton("Create Entry")
+    create_button.clicked.connect(lambda: (create_entry(result_dict), save_data(file_path, result_dict)))
+    layout.addWidget(create_button)
 
-    create_button = tk.Button(root, text="Create Entry", command=on_create)
-    create_button.pack(pady=10)
+    study_button = QtWidgets.QPushButton("Study Entries")
+    study_button.clicked.connect(lambda: (edit_entry(result_dict), save_data(file_path, result_dict)))
+    layout.addWidget(study_button)
 
-    study_button = tk.Button(root, text="Study Entries", command=on_study)
-    study_button.pack(pady=10)
-
-    root.mainloop()
+    window.setLayout(layout)  # Set the layout to the window
+    window.show()  # Show the window
+    app.exec_()  # Start the application event loop
 
 if __name__ == "__main__":
     main()
