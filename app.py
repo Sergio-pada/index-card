@@ -74,6 +74,7 @@ def edit_entry(result_dict, key, value):
     def handle_submit():
         del result_dict[key]  
         result_dict[prompt_text_edit.toPlainText()] = answer_text_edit.toPlainText()  
+        save_data("index_card.json", result_dict)
         edit_dialog.accept()  
 
     submit_button.clicked.connect(handle_submit)
@@ -105,10 +106,9 @@ def study_entries(result_dict):
         close_button = QtWidgets.QPushButton("Close")  
         flashcard_layout.addWidget(close_button)
 
-        # Connect the edit button to the edit_entry function directly
         edit_button.clicked.connect(lambda: (
-            edit_entry(result_dict, key, value),  # Directly call edit_entry with key and value
-            flashcard_dialog.accept()  # Close the flashcard dialog
+            edit_entry(result_dict, key, value),  
+            flashcard_dialog.accept()  
         ))
 
         close_button.clicked.connect(flashcard_dialog.accept)  
