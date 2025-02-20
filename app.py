@@ -1,6 +1,7 @@
 import json
 import os
 from PyQt5 import QtWidgets, QtCore
+import random  
 
 def load_data(file_path):
     """Load data from a JSON file or create a new one if it doesn't exist."""
@@ -82,8 +83,11 @@ def edit_entry(result_dict, key, value):
     edit_dialog.exec_()  
 
 def study_entries(result_dict):
-    """Display entries as flashcards."""
-    for key, value in result_dict.items():
+    """Display entries as flashcards in random order."""
+    items = list(result_dict.items())
+    random.shuffle(items)  
+
+    for key, value in items:
         flashcard_dialog = QtWidgets.QDialog()  
         flashcard_dialog.setWindowTitle("Flashcard")
         flashcard_layout = QtWidgets.QVBoxLayout()
