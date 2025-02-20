@@ -125,6 +125,37 @@ def main():
     result_dict = load_data(file_path)
 
     app = QtWidgets.QApplication([]) 
+   
+
+    app.setStyleSheet("""
+        QWidget {
+            background-color: #F4F1ED;  
+            color: #5A5A5A;
+        }
+        QPushButton {
+            background-color: #8C6A5D;  
+            color: #FFFFFF;              
+            border: none;                
+            padding: 10px;               
+            border-radius: 5px; 
+        }
+        QPushButton:hover {
+            background-color: #7A5A4D;   /* Darker version of the button color */
+        }
+        QTextEdit {
+            background-color: #D6C6B5;   
+            color: #5A5A5A;               
+            border: 1px solid #555;       
+            border-radius: 5px;           
+        }
+        QLabel {
+            color: #5A5A5A;               
+        }
+        QLabel.secondary {
+            color: #AFAFAF;               
+        }
+    """)
+
     window = QtWidgets.QWidget()
     window.setWindowTitle("Flashly")
     window.resize(400, 100)
