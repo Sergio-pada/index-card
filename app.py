@@ -5,12 +5,17 @@ import random
 
 def load_data(file_path):
     """Load data from a JSON file or create a new one if it doesn't exist."""
-    if not os.path.exists(file_path):
-        with open(file_path, 'w') as file:
-            json.dump({}, file) 
-    else:
-        with open(file_path, 'r') as file:
-            return json.load(file)
+    try:
+        if not os.path.exists(file_path):
+            with open(file_path, 'w') as file:
+                json.dump({}, file) 
+            return {}  # Return an empty dictionary if the file is created
+        else:
+            with open(file_path, 'r') as file:
+                return json.load(file)
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error loading data: {e}")
+        return {}  # Return an empty dictionary on error
 
 def multi_line_input(prompt):
     """Collect multiple lines of input until 'END' is entered."""
@@ -24,8 +29,11 @@ def multi_line_input(prompt):
 
 def save_data(file_path, data):
     """Save the data to a JSON file."""
-    with open(file_path, 'w') as file:
-        json.dump(data, file)
+    try:
+        with open(file_path, 'w') as file:
+            json.dump(data, file)
+    except IOError as e:
+        print(f"Error saving data: {e}")
 
 def create_entry(result_dict):
     """Create a new entry in the result dictionary."""
